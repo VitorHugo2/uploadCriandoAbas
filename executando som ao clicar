@@ -1,0 +1,90 @@
+Dentro da respectiva fragment 
+
+1.0 mudar o *return inflater.inflate(R.layout.fragment_bichos, container, false);*
+  	para  View view = inflater.inflate(R.layout.fragment_bichos, container, false);
+
+	1.1 abaixo, ainda na mesma função onCreate, retorne a view criada acima
+		return view;
+	
+	1.2 Aplicar os IDs para cada elemento clicavel da fragment
+
+	1.3 Criar as variaveis de identificação dos elementos dentro da fragment, dentro da classe Fragment extends, asseguir exemplo para 3 botões.
+	    private Button buttonEnviar, buttonPlay, buttonStop;
+
+	1.4 na função View onCreateView, acima de return view; , criar as respectivas referencias para cada botão, exemplo com os 3 botões criados acima
+		buttonEnviar = view.findViewById(R.id.buttonEnviar);
+		buttonPlay = view.findViewById(R.id.buttonPlay);
+		buttonStop = view.findViewById(R.id.buttonStop);
+
+		//obs"é obrigatorio usar a classe view no começo do findViewById se ele estiver dentro de uma fragment, na activityMain isso nao acontece"     
+
+	1.5 agora na classe principal a que extends de Fragment, na frente de extends Fragment implemente o View.OnClickListener como no exemplo abaixo
+		public class NomeFragment extends Fragment implements View.OnClickListener {	
+
+	
+	1.6 Pode se notar  erro na class, para resolver basta clicar no começo de public class, assim clique na lampada vermelha e implemente os metodos exigidos 	
+	1.7 agora na função onCreateView, abaixo do ultimo botão, nesse caso buttonStop, implemente o setOnClickListener com o this como parametro. Exemplo
+		
+		buttonEnviar.setOnClickListener(this);
+		buttonPlay.setOnClickListener(this);
+		buttonStop.setOnClickListener(this);
+
+    1.8 Criar um atributo na classe principal do tipo MediaPlayer, segue exemplo
+    	private MediaPlayer mediaPlayer;
+
+
+	1.9 agora basta usar um swich na função onClick que fora criada la embaixo, assim se for buttonEnviar ele tocará o respectivo som. segue exemplo...
+
+			 public void onClick(View view) {
+
+       			 switch (view.getId()){
+
+            		case R.id.buttonEnviar:
+                		
+            			mediaPlayer = MediaPlayer.create(getActivity(),R.raw.somEnviar)
+
+               		 break;
+
+       		 	}
+
+   			 } 	
+
+
+   	1.10 para que seja mais conveniente ja que iremos usar o mediaPlayer em todos os cases, crie um metodo/funcão abaixo do onClick(View view) exemplo abaixo
+
+   		public void tocarSom(){
+   			if(mediaPlayer != null){
+   				mediaPlayer.start;
+
+   				mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mediaPlayer) {
+                    mediaPlayer.release();
+                }
+            });
+   			}
+   		}
+
+   	1.11 Agora basta chamar o metodo tocarSom abaixo de cada mediaPlayer criado nos cases do switch acima, exemplo abaixo.	
+
+   		switch (view.getId()){
+
+            		case R.id.buttonEnviar:
+                		
+            			mediaPlayer = MediaPlayer.create(getActivity(),R.raw.somEnviar)
+                        tocarSom();
+               		 break;
+
+               		 case R.id.buttonPlay:
+                		
+            			mediaPlayer = MediaPlayer.create(getActivity(),R.raw.somPlay)
+                        tocarSom();
+               		 break;
+
+               		 case R.id.buttonStop:
+                		
+            			mediaPlayer = MediaPlayer.create(getActivity(),R.raw.somStop)
+                        tocarSom();
+               		 break;
+
+       		 	}
