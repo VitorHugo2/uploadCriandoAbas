@@ -1,0 +1,118 @@
+
+*****implementar dependencias no modulo**********
+implementation 'com.ogaclejapan.smarttablayout:library:2.0.0@aar'
+implementation 'com.ogaclejapan.smarttablayout:utils-v4:2.0.0@aar'
+
+
+
+****************activity_main text***********************
+
+1 Transforme de constrant para linear layout
+
+2 após tools:context=".MainActivity"> Cole o seguinte bloco de codigos
+
+  		<com.ogaclejapan.smarttablayout.SmartTabLayout
+        android:id="@+id/viewPagerTab"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@color/colorPrimary"
+
+        app:stl_distributeEvenly="true"
+        app:stl_defaultTabBackground="?attr/selectableItemBackground"
+        app:stl_defaultTabTextAllCaps="true"
+        app:stl_defaultTabTextColor="@android:color/white"
+        app:stl_defaultTabTextSize="14sp"
+
+        app:stl_indicatorGravity="bottom"
+        app:stl_indicatorColor="@color/colorPrimaryDark"
+        app:stl_indicatorThickness="4dp"
+        app:stl_indicatorCornerRadius="2dp"
+
+        app:stl_dividerColor="@color/colorPrimaryDark"
+        app:stl_dividerThickness="0dp"
+
+        app:stl_overlineColor="#4D000000"
+        app:stl_overlineThickness="0dp"
+        app:stl_underlineColor="#4D000000"
+        app:stl_underlineThickness="1dp"
+
+        app:stl_indicatorWidth="auto"
+        app:stl_indicatorAlwaysInCenter="false"
+        app:stl_indicatorWithoutPadding="false"
+        app:stl_indicatorInFront="false"
+        app:stl_indicatorInterpolation="smart"
+        app:stl_defaultTabTextHorizontalPadding="16dp"
+        app:stl_defaultTabTextMinWidth="0dp"
+        app:stl_clickable="true"
+        app:stl_titleOffset="24dp"
+        app:stl_drawDecorationAfterTab="false"
+        />
+
+    	<androidx.viewpager.widget.ViewPager
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/viewPagerTab"
+        />  
+
+******************************************em MainActivity************************************************
+
+3.0 defina os atributos
+	3.1 dentro de public class MainActivity extends AppCompatActivity 
+		
+		private SmartTabLayout smartTabLayout;
+		private ViewPager viewPager;
+
+	3.2 dentro de protected void onCreate(Bundle savedInstanceState) assosie os atributos acima
+		
+		smartTabLayout = findViewById(R.id.viewPagerTab);
+		viewPager = findViewById(R.id.viewPager);
+
+4.0 configurando o adapter
+	4.1 ainda no onCreate, embaixo de viewPager = findViewById(R.id.viewPager); instancie o adapter
+
+		FragmentPagerItemAdapter adapter = new FragmentPagerItemAdapter(); 
+
+	4.2 como parametros, passe manualmente o getSupportFragmentManager(), tambem o  FragmentPagerItems.with(this), e por fim o .create , ficando como o exemplo abaixo
+
+		FragmentPagerItemAdapter adapter = new FragmentPagerItemAdapter(
+                getSupportFragmentManager(),
+                FragmentPagerItems.with(this)
+                .create()
+        );
+
+5.0 criando os fragments( as telas que serão carregadas pelas abas )
+	5.1 criar um novo Package na mesma pasta de sua MainActivity com o nome de fragment
+	
+	5.2 neste package, criar as respectivas fragments, lembrando sempre de desmarcar as duas opções de include e os nomes sempre começando com letra maiuscula e terminando com Fragment... por exemplo HomeFragmant, EmAltaFragment, InscricoesFragment etc...
+
+	5.3 dentro do adapter criado em 4.2 antes de .create, configure as Fragments criadas, .add( "Titulo", Fragment.class )                segue exemplo 
+		
+		FragmentPagerItemAdapter adapter = new FragmentPagerItemAdapter(
+                getSupportFragmentManager(),
+                FragmentPagerItems.with(this)
+                .add("Home", HomeFragment.class)
+                .add("Em Alta", EmAltaFragment.class)        
+                .add("Inscrições", InscricoesFragment.class)
+                .create()
+        );
+
+6.0 Agora logo abaixo, depois do fechamento dos parametros de adapter dentro de onCreated sete o adapter e a view page tal como o exemplo abaixo
+	
+	6.1 siga o exemplo
+
+		FragmentPagerItemAdapter adapter = new FragmentPagerItemAdapter(
+                getSupportFragmentManager(),
+                FragmentPagerItems.with(this)
+                .add("Home", HomeFragment.class)
+                .add("Em Alta", EmAltaFragment.class)        
+                .add("Inscrições", InscricoesFragment.class)
+                .create()
+        );
+
+        viewPager.setAdapter(adapter);
+        smartTabLayout.setViewPager( viewPager );
+
+
+7.0 (Opcional) Retirar a linha que fica em cima dos nomes
+	7.1 dentro de onCreate passe o seguinte getSupportActionBar().setElevation(0);
